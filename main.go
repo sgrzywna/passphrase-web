@@ -15,7 +15,7 @@ import (
 
 func main() {
 	port := flag.Int("port", 8080, "listening port")
-	dir := flag.String("dir", "./", "static files directory")
+	dir := flag.String("dir", ".", "static files directory")
 	flag.Parse()
 	log.Printf("Listening @ :%d...", *port)
 	log.Printf("Files directory: %s", *dir)
