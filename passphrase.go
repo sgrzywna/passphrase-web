@@ -14,18 +14,6 @@ const (
 
 // GeneratePasswordsFromFile returns list of random passwords generated from dictionary stored in file.
 func GeneratePasswordsFromFile(dictionary string, passwordsCount int, wordsCount int) ([]string, error) {
-	if passwordsCount < 1 {
-		passwordsCount = 1
-	} else if passwordsCount > maxPasswordsCount {
-		passwordsCount = maxPasswordsCount
-	}
-
-	if wordsCount < 1 {
-		wordsCount = 1
-	} else if wordsCount > maxWordsCount {
-		wordsCount = maxWordsCount
-	}
-
 	d, err := LoadDictionary(dictionary)
 	if err != nil {
 		return nil, err
