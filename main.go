@@ -9,7 +9,9 @@ import (
 	"net/http"
 	"net/url"
 	"path/filepath"
+	"sort"
 	"strconv"
+	"strings"
 )
 
 func main() {
@@ -33,8 +35,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// [:len(d.fileName)-len(dictFileSuffix)]
-
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(staticDir))))
 	http.HandleFunc("/passwords.json", getPasswords(generator))
 	http.HandleFunc("/", getIndexHandler(generator, t))
@@ -43,17 +43,21 @@ func main() {
 }
 
 func getIndexHandler(generator *Generator, t *template.Template) http.HandlerFunc {
-	// dictNames := []struct {
-	// 	name string
-	// 	val  string
-	// 	def  bool
-	// }{}
+	type selectData struct {
+		Name  string
+		Value string
+	}
 
-	// dictFiles := generator.GetDictFiles()
-	// for ndx, name := range dictFiles {
-	// 	dictNames = append(dictNames, )
-	// }
-	dictNames := struct{}{}
+	var dictNames []selectData
+
+	files := generator.GetDictFiles()
+	sort.Strings(files)
+
+	for _, file := range files {
+		name := strings.Title(strings.TrimSuffix(file, filepath.Ext(file)))
+		dictNames = append(dictNames, selectData{name, file})
+	}
+
 	return func(w http.ResponseWriter, r *http.Request) {
 		err := t.Execute(w, dictNames)
 		if err != nil {
