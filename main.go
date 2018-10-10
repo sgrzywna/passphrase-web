@@ -14,6 +14,13 @@ import (
 	"strings"
 )
 
+const (
+	minPasswords = 1
+	maxPasswords = 11
+	minWords     = 1
+	maxWords     = 5
+)
+
 func main() {
 	port := flag.Int("port", 8080, "listening port")
 	dir := flag.String("dir", ".", "static files directory")
@@ -74,6 +81,18 @@ func getPasswords(generator *Generator) http.HandlerFunc {
 		dict := getStringValue(values, "d", "")
 		passwords := getIntValue(values, "p", 7)
 		words := getIntValue(values, "w", 3)
+
+		if passwords < minPasswords {
+			passwords = minPasswords
+		} else if passwords > maxPasswords {
+			passwords = maxPasswords
+		}
+
+		if words < minWords {
+			words = minWords
+		} else if words > maxWords {
+			words = maxWords
+		}
 
 		res := generator.GeneratePasswords(dict, passwords, words)
 		err := json.NewEncoder(w).Encode(res)
