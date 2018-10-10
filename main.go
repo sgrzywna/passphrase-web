@@ -36,8 +36,10 @@ func main() {
 	}
 
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(staticDir))))
-	http.HandleFunc("/passwords.json", getPasswords(generator))
+	http.HandleFunc("/passwords.json", limit(getPasswords(generator)))
 	http.HandleFunc("/", getIndexHandler(generator, t))
+
+	initLimiter()
 
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), nil))
 }
