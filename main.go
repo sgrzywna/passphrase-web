@@ -12,6 +12,8 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+
+	rice "github.com/GeertJohan/go.rice"
 )
 
 const (
@@ -23,16 +25,21 @@ const (
 
 func main() {
 	port := flag.Int("port", 8080, "listening port")
-	dir := flag.String("dir", ".", "static files directory")
 	dictDir := flag.String("dicts", ".", "dictionary files directory")
 	flag.Parse()
 	log.Printf("Listening @ :%d...", *port)
-	log.Printf("Files directory: %s", *dir)
 
-	staticDir := filepath.Join(*dir, "static")
-	log.Printf("Static files directory: %s", staticDir)
+	tmplBox, err := rice.FindBox("web/template")
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	t, err := template.ParseFiles(filepath.Join(*dir, "index.html"))
+	indexTmpl, err := tmplBox.String("index.tmpl")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	t, err := template.New("index.html").Parse(indexTmpl)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -42,7 +49,12 @@ func main() {
 		log.Fatal(err)
 	}
 
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(staticDir))))
+	staticBox, err := rice.FindBox("web/static")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(staticBox.HTTPBox())))
 	http.HandleFunc("/passwords.json", limit(getPasswords(generator)))
 	http.HandleFunc("/", getIndexHandler(generator, t))
 
