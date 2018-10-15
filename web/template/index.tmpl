@@ -1,0 +1,104 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Password generator</title>
+    <meta name="description" content="Generator of easy to remember passwords">
+    <meta name="author" content="sgnet">
+    <link rel="stylesheet" href="/static/siimple.min.css">
+</head>
+
+<body>
+    <div class="siimple-grid">
+        <div class="siimple-grid-row">
+            <div class="siimple-grid-col siimple-grid-col--2"></div>
+            <div class="siimple-grid-col siimple-grid-col--8">
+                <div class="siimple-box siimple-box--primary">
+                    <div class="siimple-box-title">Password generator</div>
+                    <div class="siimple-box-subtitle">Generate easy to remember, but hard to guess passwords.</div>
+                    <div class="siimple-box-detail">This handy tool will generate passwords that you won't forget
+                        anymore.</div>
+                </div>
+            </div>
+            <div class="siimple-grid-col siimple-grid-col--2"></div>
+        </div>
+        <div id="error" class="siimple-grid-row siimple--display-none">
+            <div class="siimple-grid-col siimple-grid-col--2"></div>
+            <div class="siimple-grid-col siimple-grid-col--8">
+                <div class="siimple-alert siimple-alert--error">
+                    Network error.
+                </div>
+            </div>
+            <div class="siimple-grid-col siimple-grid-col--2"></div>
+        </div>
+        <div id="toomany" class="siimple-grid-row siimple--display-none">
+            <div class="siimple-grid-col siimple-grid-col--2"></div>
+            <div class="siimple-grid-col siimple-grid-col--8">
+                <div class="siimple-alert siimple-alert--warning">
+                    Too many requests.
+                </div>
+            </div>
+            <div class="siimple-grid-col siimple-grid-col--2"></div>
+        </div>
+        <div class="siimple-grid-row">
+            <div class="siimple-grid-col siimple-grid-col--2"></div>
+            <div class="siimple-grid-col siimple-grid-col--4">
+                <div class="siimple-content">
+                    <div class="siimple-form">
+                        <div class="siimple-form-title">Generator parameters</div>
+                        <div class="siimple-form-detail">Choose generator parameters.</div>
+                        <div class="siimple-form-field">
+                            <label class="siimple-label">Dictionary:</label>
+                            <select id="dictionary" class="siimple-select siimple-select--fluid">
+                                {{range .}}<option value="{{.Value}}">{{.Name}}</option>{{end}}
+                            </select>
+                        </div>
+                        <div class="siimple-form-field">
+                            <label class="siimple-label">Number of words:</label>
+                            <select id="words-num" class="siimple-select siimple-select--fluid">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3" selected>3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                        </div>
+                        <div class="siimple-form-field">
+                            <label class="siimple-label">Number of passwords:</label>
+                            <select id="passwords-num" class="siimple-select siimple-select--fluid">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="5">5</option>
+                                <option value="7" selected>7</option>
+                                <option value="11">11</option>
+                            </select>
+                        </div>
+                        <div class="siimple-form-field">
+                            <div id="submit-btn" class="siimple-btn siimple-btn--blue siimple-btn--fluid">Generate</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="siimple-grid-col siimple-grid-col--4">
+                <div class="siimple-content">
+                    <div class="siimple-form">
+                        <div class="siimple-form-title">Passwords</div>
+                        <div class="siimple-form-detail">List of generated passwords.</div>
+                        <div id="passwords" class="siimple-list"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="siimple-grid-col siimple-grid-col--2"></div>
+        </div>
+    </div>
+    <div class="siimple-footer siimple-footer--dark siimple--text-center siimple--text-small">
+        <p>This website does not use any cookies at all.</p>
+        <a href="https://github.com/sgrzywna/passphrase-web" class="siimple-link">https://github.com/sgrzywna/passphrase-web</a>
+    </div>
+    <script src="/static/index.js"></script>
+</body>
+
+</html>
