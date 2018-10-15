@@ -24,6 +24,24 @@
             </div>
             <div class="siimple-grid-col siimple-grid-col--2"></div>
         </div>
+        <div id="error" class="siimple-grid-row siimple--display-none">
+            <div class="siimple-grid-col siimple-grid-col--2"></div>
+            <div class="siimple-grid-col siimple-grid-col--8">
+                <div class="siimple-alert siimple-alert--error">
+                    Network error.
+                </div>
+            </div>
+            <div class="siimple-grid-col siimple-grid-col--2"></div>
+        </div>
+        <div id="toomany" class="siimple-grid-row siimple--display-none">
+            <div class="siimple-grid-col siimple-grid-col--2"></div>
+            <div class="siimple-grid-col siimple-grid-col--8">
+                <div class="siimple-alert siimple-alert--warning">
+                    Too many requests.
+                </div>
+            </div>
+            <div class="siimple-grid-col siimple-grid-col--2"></div>
+        </div>
         <div class="siimple-grid-row">
             <div class="siimple-grid-col siimple-grid-col--2"></div>
             <div class="siimple-grid-col siimple-grid-col--4">
@@ -49,7 +67,7 @@
                         </div>
                         <div class="siimple-form-field">
                             <label class="siimple-label">Number of passwords:</label>
-                            <select  id="passwords-num" class="siimple-select siimple-select--fluid">
+                            <select id="passwords-num" class="siimple-select siimple-select--fluid">
                                 <option value="1">1</option>
                                 <option value="2">2</option>
                                 <option value="3">3</option>
