@@ -49,6 +49,7 @@
   analyzer-version = 1
   input-imports = [
     "github.com/GeertJohan/go.rice",
+    "github.com/GeertJohan/go.rice/embedded",
     "golang.org/x/time/rate",
   ]
   solver-name = "gps-cdcl"
