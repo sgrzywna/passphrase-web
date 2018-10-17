@@ -2,7 +2,7 @@
 
 Simple password generator with web interface.
 
-[[https://github.com/sgrzywna/passphrase-web/blob/master/screenshot.jpg|alt=passphrase-web]]
+![passphrase-web](https://github.com/sgrzywna/passphrase-web/blob/master/screenshot.jpg)
 
 From time to time I need to generate password, but almost any web generator out there is over complicated or gives password maybe hard to crack but also hard to remember.
 
