@@ -6,6 +6,8 @@ BINARY_NAME=passphrase-web
 DEPCMD=dep
 RICECMD=rice
 
+.PHONY: all dep rice build clean
+
 all: test dep rice build
 
 test:
