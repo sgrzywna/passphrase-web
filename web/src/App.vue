@@ -17,14 +17,22 @@
         </div>
         <div class="siimple-grid-col siimple-grid-col--2"></div>
       </div>
-      <div id="error" class="siimple-grid-row siimple--display-none">
+      <div
+        id="error"
+        class="siimple-grid-row"
+        :class="{ 'siimple--display-none': !isNetworkError }"
+      >
         <div class="siimple-grid-col siimple-grid-col--2"></div>
         <div class="siimple-grid-col siimple-grid-col--8">
           <div class="siimple-alert siimple-alert--error">Network error.</div>
         </div>
         <div class="siimple-grid-col siimple-grid-col--2"></div>
       </div>
-      <div id="toomany" class="siimple-grid-row siimple--display-none">
+      <div
+        id="toomany"
+        class="siimple-grid-row"
+        :class="{ 'siimple--display-none': !tooManyRequests }"
+      >
         <div class="siimple-grid-col siimple-grid-col--2"></div>
         <div class="siimple-grid-col siimple-grid-col--8">
           <div class="siimple-alert siimple-alert--warning">Too many requests.</div>
@@ -78,40 +86,58 @@ export default {
   data() {
     return {
       parameters: {
-        dicts: ["polish", "english"],
-        selectedDict: "polish",
+        dicts: [],
+        selectedDict: "",
         numOfWords: [1, 2, 3, 4, 5],
         selectedNumOfWords: 3,
         numOfPasswords: [1, 2, 3, 5, 7, 11],
         selectedNumOfPasswords: 7
       },
-      passwords: []
+      passwords: [],
+      isNetworkError: false,
+      tooManyRequests: false
     };
   },
   created() {
-    this.onGenerate();
-  },
-  watch: {
-      parameters: () => {
-        console.log('watch')
-      }
+    this.getDictionaries();
   },
   methods: {
+    getDictionaries() {
+      axios
+        .get("/api/dicts.json")
+        .then(response => {
+          this.parameters.dicts = response.data;
+          if (this.parameters.dicts.length > 0) {
+            this.parameters.selectedDict = this.parameters.dicts[0];
+            this.onGenerate();
+          }
+        })
+        .catch(err => {});
+    },
     onGenerate() {
       axios
         .get("/api/passwords.json", {
           params: {
-            d: "polish.dict",
+            d: this.parameters.selectedDict,
             w: this.parameters.selectedNumOfWords,
             p: this.parameters.selectedNumOfPasswords
           }
         })
         .then(response => {
+          this.clearErrors();
           this.passwords = response.data;
         })
         .catch(err => {
-          console.log(err);
+          if (err.response && err.response.status == 429) {
+            this.tooManyRequests = true;
+          } else {
+            this.isNetworkError = true;
+          }
         });
+    },
+    clearErrors() {
+      this.isNetworkError = false;
+      this.tooManyRequests = false;
     }
   }
 };

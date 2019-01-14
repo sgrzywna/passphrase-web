@@ -7,7 +7,10 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"path/filepath"
+	"sort"
 	"strconv"
+	"strings"
 
 	rice "github.com/GeertJohan/go.rice"
 )
@@ -37,35 +40,31 @@ func main() {
 
 	http.Handle("/", http.FileServer(distBox.HTTPBox()))
 	http.HandleFunc("/api/passwords.json", limit(getPasswords(generator)))
+	http.HandleFunc("/api/dicts.json", limit(getDictionaries(generator)))
 
 	initLimiter()
 
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), nil))
 }
 
-// func getIndexHandler(generator *Generator, t *template.Template) http.HandlerFunc {
-// 	type selectData struct {
-// 		Name  string
-// 		Value string
-// 	}
+func getDictionaries(generator *Generator) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var res []string
 
-// 	var dictNames []selectData
+		files := generator.GetDictFiles()
+		sort.Strings(files)
 
-// 	files := generator.GetDictFiles()
-// 	sort.Strings(files)
+		for _, file := range files {
+			name := strings.TrimSuffix(file, filepath.Ext(file))
+			res = append(res, name)
+		}
 
-// 	for _, file := range files {
-// 		name := strings.Title(strings.TrimSuffix(file, filepath.Ext(file)))
-// 		dictNames = append(dictNames, selectData{name, file})
-// 	}
-
-// 	return func(w http.ResponseWriter, r *http.Request) {
-// 		err := t.Execute(w, dictNames)
-// 		if err != nil {
-// 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-// 		}
-// 	}
-// }
+		err := json.NewEncoder(w).Encode(res)
+		if err != nil {
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		}
+	}
+}
 
 func getPasswords(generator *Generator) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -86,7 +85,8 @@ func getPasswords(generator *Generator) http.HandlerFunc {
 			words = maxWords
 		}
 
-		res := generator.GeneratePasswords(dict, passwords, words)
+		fullDictName := fmt.Sprintf("%s%s", dict, dictFileSuffix)
+		res := generator.GeneratePasswords(fullDictName, passwords, words)
 		err := json.NewEncoder(w).Encode(res)
 		if err != nil {
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
