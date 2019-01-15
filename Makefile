@@ -5,10 +5,14 @@ GOTEST=$(GOCMD) test
 BINARY_NAME=passphrase-web
 DEPCMD=dep
 RICECMD=rice
+NPMCMD=npm
 
-.PHONY: all dep rice build clean
+.PHONY: all ui dep rice build clean
 
-all: test dep rice build
+all: ui test dep rice build
+
+ui:
+	$(MAKE) -C web all
 
 test:
 	$(GOTEST) -v ./...
