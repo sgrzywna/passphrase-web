@@ -1,0 +1,12 @@
+server {
+    listen       80;
+    server_name  localhost;
+
+    location /api/ {
+       proxy_pass http://${API_HOST}:${API_PORT}/api/;
+    }
+
+    location / {
+       proxy_pass http://${APP_HOST}:${APP_PORT};
+    }
+}
