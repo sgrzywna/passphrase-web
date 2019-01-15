@@ -12,8 +12,7 @@ NPMCMD=npm
 all: ui test dep rice build
 
 ui:
-	cd web && $(NPMCMD) install
-	cd web && $(NPMCMD) run build
+	$(MAKE) -C web all
 
 test:
 	$(GOTEST) -v ./...
@@ -30,4 +29,3 @@ build:
 clean:
 	$(GOCLEAN)
 	rm -f $(BINARY_NAME) rice-box.go
-	rm -rf web/dist
