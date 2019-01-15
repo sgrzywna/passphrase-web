@@ -5,10 +5,15 @@ GOTEST=$(GOCMD) test
 BINARY_NAME=passphrase-web
 DEPCMD=dep
 RICECMD=rice
+NPMCMD=npm
 
-.PHONY: all dep rice build clean
+.PHONY: all ui dep rice build clean
 
-all: test dep rice build
+all: ui test dep rice build
+
+ui:
+	cd web && $(NPMCMD) install
+	cd web && $(NPMCMD) run build
 
 test:
 	$(GOTEST) -v ./...
@@ -25,3 +30,4 @@ build:
 clean:
 	$(GOCLEAN)
 	rm -f $(BINARY_NAME) rice-box.go
+	rm -rf web/dist
