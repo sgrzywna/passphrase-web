@@ -62,11 +62,20 @@
       </div>
     </div>
     <div class="siimple-footer siimple-footer--dark siimple--text-center siimple--text-small">
-      <p>This website does not use any cookies at all.</p>
-      <a
-        href="https://github.com/sgrzywna/passphrase-web"
-        class="siimple-link"
-      >https://github.com/sgrzywna/passphrase-web</a>
+      <p>
+        This website does not use any cookies at all.
+        <a
+          href="https://github.com/sgrzywna/passphrase-web"
+          class="siimple-link"
+        >See by yourself.</a>
+      </p>
+      <p>
+        Favicon courtesy of the
+        <a
+          href="http://www.fatcow.com/free-icons"
+          class="siimple-link"
+        >http://www.fatcow.com/free-icons</a>
+      </p>
     </div>
   </div>
 </template>
@@ -112,7 +121,7 @@ export default {
             this.onGenerate();
           }
         })
-        .catch(err => {});
+        .catch(() => {});
     },
     onGenerate() {
       axios
