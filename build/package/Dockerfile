@@ -1,33 +1,16 @@
-# minimize stage
-FROM node:8.12.0-alpine AS minimize
+# build UI
+FROM node:10.15.0-alpine AS dist
 LABEL stage=intermediate
 
-RUN npm install html-minifier -g
-RUN npm install uglify-js -g
+COPY . /app
 
-COPY . /go/src/github.com/sgrzywna/passphrase-web
+WORKDIR /app/web
 
-RUN uglifyjs \
-    --compress \
-    --mangle \
-    --toplevel \
-    --output /tmp/index.js \
-    /go/src/github.com/sgrzywna/passphrase-web/web/static/index.js
+RUN npm install
 
-RUN html-minifier \
-    --collapse-whitespace \
-    --remove-comments \
-    --remove-optional-tags \
-    --remove-redundant-attributes \
-    --remove-script-type-attributes \
-    --remove-tag-whitespace \
-    --use-short-doctype \
-    --minify-css true \
-    --minify-js true \
-    --output /tmp/index.tmpl \
-    /go/src/github.com/sgrzywna/passphrase-web/web/template/index.tmpl
+RUN npm run build
 
-# build stage
+# build service
 FROM golang:1.11.1-alpine3.8 AS build
 LABEL stage=intermediate
 
@@ -37,19 +20,18 @@ RUN go get github.com/golang/dep/cmd/dep
 RUN go get github.com/GeertJohan/go.rice
 RUN go get github.com/GeertJohan/go.rice/rice
 
-WORKDIR /go/src/github.com/sgrzywna/passphrase-web
-
 COPY . /go/src/github.com/sgrzywna/passphrase-web
 
-COPY --from=minimize /tmp/index.js /go/src/github.com/sgrzywna/passphrase-web/web/static/index.js
-COPY --from=minimize /tmp/index.tmpl /go/src/github.com/sgrzywna/passphrase-web/web/template/index.tmpl
+COPY --from=dist /app/web/dist /go/src/github.com/sgrzywna/passphrase-web/web/dist
+
+WORKDIR /go/src/github.com/sgrzywna/passphrase-web
 
 RUN make clean \
     && make dep \
     && make rice \
     && make build
 
-# release stage
+# build release
 FROM alpine:3.8
 
 WORKDIR /app
