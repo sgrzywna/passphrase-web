@@ -113,7 +113,11 @@ export default {
   methods: {
     getDictionaries() {
       axios
-        .get("/api/dicts.json")
+        .get("/api/dicts.json", {
+          params: {
+            ts: Date.now()
+          }
+        })
         .then(response => {
           this.parameters.dicts = response.data;
           if (this.parameters.dicts.length > 0) {
@@ -129,7 +133,8 @@ export default {
           params: {
             d: this.parameters.selectedDict,
             w: this.parameters.selectedNumOfWords,
-            p: this.parameters.selectedNumOfPasswords
+            p: this.parameters.selectedNumOfPasswords,
+            ts: Date.now()
           }
         })
         .then(response => {
